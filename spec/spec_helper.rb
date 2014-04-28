@@ -4,12 +4,13 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'combustion'
-puts 'combusting'
 Combustion.initialize! :active_record, :action_controller
-puts 'done'
 require 'rspec/rails'
 
 RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
   config.mock_with :mocha
   config.use_transactional_fixtures = true
   config.order = "random"

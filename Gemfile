@@ -8,6 +8,7 @@ gemspec
 group :test do
   gem 'activerecord'
   gem 'actionpack' # action_controller, action_view
+  gem 'pry'
 end
 
 # jquery-rails is used by the dummy application

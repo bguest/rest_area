@@ -54,9 +54,10 @@ describe RestArea::RestController do
       thing.stubs(:save).returns(false)
 
       post :create, thing:attrs, :klass => 'things', :format => :json
-      response.should be_unprocessable_entity
 
+      @response.code.should == '422'
       response = JSON.parse @response.body
+
       expected_response = {"errors"=>{"base"=>["are belong to us"]}}
       response.should == expected_response
     end
@@ -82,9 +83,10 @@ describe RestArea::RestController do
       thing.errors.add(:base, 'are belong to us')
 
       delete :delete, id:'24', :klass => 'things', :format => :json
-      response.should be_unprocessable_entity
 
+      @response.code.should == '422'
       response = JSON.parse @response.body
+
       expected_response = {"errors"=>{"base"=>["are belong to us"]}}
       response.should == expected_response
     end

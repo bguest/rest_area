@@ -55,7 +55,7 @@ module RestArea
 
     def get_class
       @klass = params[:klass].singularize.camelize.constantize
-      unless [Thing].include? @klass
+      unless RestArea.class_whitelist.include? @klass
         raise ActionController::RoutingError.new("Resource Does Not Exist")
       end
 

@@ -36,6 +36,7 @@ GEM
       multi_json (~> 1.0)
     arel (3.0.3)
     builder (3.0.4)
+    coderay (1.1.0)
     combustion (0.5.1)
       activesupport (>= 3.0.0)
       railties (>= 3.0.0)
@@ -50,11 +51,16 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     metaclass (0.0.4)
+    method_source (0.8.2)
     mime-types (1.25.1)
     mocha (1.0.0)
       metaclass (~> 0.0.1)
     multi_json (1.9.2)
     polyglot (0.3.4)
+    pry (0.9.12.6)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -100,6 +106,7 @@ GEM
       rspec-mocks (= 3.0.0.beta2)
       rspec-support (= 3.0.0.beta2)
     rspec-support (3.0.0.beta2)
+    slop (3.5.0)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -121,6 +128,7 @@ DEPENDENCIES
   activerecord
   combustion (~> 0.5.1)
   mocha (~> 1.0.0)
+  pry
   rest_area!
   rspec-rails (~> 3.0.0.beta)
   sqlite3
