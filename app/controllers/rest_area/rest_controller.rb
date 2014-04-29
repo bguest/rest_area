@@ -15,7 +15,7 @@ module RestArea
 
     # POST
     def create
-      object = @klass.new(params[@root.to_sym])
+      object = @klass.new(klass_params)
       if object.save
         render json: object.to_json(:root => @root), :status => :created
       else
@@ -51,6 +51,10 @@ module RestArea
 
     def query_params
       params.slice('limit','order').symbolize_keys
+    end
+
+    def klass_params
+      params.require(@root.to_sym).permit(@klass.column_names.map(&:to_sym))
     end
 
     def get_class

@@ -8,6 +8,8 @@ Combustion.initialize! :active_record, :action_controller
 require 'rspec/rails'
 
 RSpec.configure do |config|
+  config.add_setting :updating_rails_version
+  config.updating_rails_version = true
   config.expect_with :rspec do |c|
     c.syntax = [:should, :expect]
   end

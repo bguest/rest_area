@@ -1,12 +1,11 @@
-require 'spec_helper.rb'
+require 'spec_helper'
 
 describe RestArea::RestController do
   routes { RestArea::Engine.routes }
-  updating_rail_version = false
 
   describe "#index GET /rest/:klass" do
     it 'get all the things' do
-      if updating_rail_version
+      if RSpec.configuration.updating_rails_version
         Thing.create(name:'bob')
         Thing.create(name:'fred')
       else
@@ -27,11 +26,18 @@ describe RestArea::RestController do
 
   describe "#show GET /rest/:klass/:id" do
     it 'should get the specified object' do
-      thing = Thing.new(name:'dan')
-      Thing.stubs(:find).with('42').returns(thing)
-      thing.stubs(:save).returns(true)
 
-      get :show, id:'42', :klass => 'things', :format => :json
+      if RSpec.configuration.updating_rails_version
+        thing = Thing.create(name:'dan')
+        id = thing.id
+      else
+        thing = Thing.new(name:'dan')
+        Thing.stubs(:find).with('42').returns(thing)
+        thing.stubs(:save).returns(true)
+        id = '42'
+      end
+
+      get :show, id:id, :klass => 'things', :format => :json
 
       response = JSON.parse @response.body
       response['thing']['name'].should == 'dan'
@@ -42,8 +48,11 @@ describe RestArea::RestController do
     it 'be able to create object' do
       attrs = {'name' => 'chris'}
       thing = Thing.new(attrs)
-      Thing.expects(:new).with(attrs).returns(thing)
-      thing.stubs(:save).returns(true)
+
+      unless RSpec.configuration.updating_rails_version
+        Thing.expects(:new).with(attrs).returns(thing)
+        thing.stubs(:save).returns(true)
+      end
 
       post :create, thing:attrs, :klass => 'things', :format => :json
       response.should be_success
