@@ -2,11 +2,17 @@ require 'spec_helper.rb'
 
 describe RestArea::RestController do
   routes { RestArea::Engine.routes }
+  updating_rail_version = false
 
   describe "#index GET /rest/:klass" do
     it 'get all the things' do
-      array = [Thing.new(name: 'bob'), Thing.new(name:'fred')]
-      Thing.stubs(:all).returns(array)
+      if updating_rail_version
+        Thing.create(name:'bob')
+        Thing.create(name:'fred')
+      else
+        array = [Thing.new(name: 'bob'), Thing.new(name:'fred')]
+        Thing.stubs(:all).returns(array)
+      end
 
       get :index, :klass => 'things', :format => :json
 

@@ -5,7 +5,7 @@ module RestArea
 
     # GET
     def index
-      render json:{ @roots => @klass.all(query_params) }.to_json(root:false)
+      render json:{ @roots => @klass.all }.to_json(root:false)
     end
 
     def show
