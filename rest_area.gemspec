@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Adds a restfull controller and api to a Rails Application"
   s.description = "RestArea adds a restfull controller and api to any Rails Application, simply add the gem and whitelist of available models"
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency "rails", "~>4.1"
   # s.add_dependency "jquery-rails"
