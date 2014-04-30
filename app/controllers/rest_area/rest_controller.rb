@@ -30,7 +30,7 @@ module RestArea
     # PUT
     def update
       object = @klass.find(params[:id])
-      if object.update_attributes(klass_params)
+      if object.update_attributes(params[@root.to_sym])
         render json: object, root:@root
       else
         render_errors(object)
@@ -55,10 +55,6 @@ module RestArea
 
     def query_params
       params.slice('limit','order').symbolize_keys
-    end
-
-    def klass_params
-      params.require(@root.to_sym).permit(@klass.column_names.map(&:to_sym))
     end
 
     def set_class_serializer
