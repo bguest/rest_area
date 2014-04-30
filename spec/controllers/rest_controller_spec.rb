@@ -50,8 +50,6 @@ describe RestArea::RestController do
   describe "#show GET /rest/:klass/:id" do
     it 'should get the specified object' do
       thing = Thing.new(name:'dan')
-      Thing.stubs(:find).with('42').returns(thing)
-      thing.stubs(:save).returns(true)
 
       if RSpec.configuration.updating_rails_version
         thing = Thing.create(name:'dan')
