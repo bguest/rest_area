@@ -5,14 +5,28 @@ create the initilizers file with the classes that you want to be in the
 rest api and you will get the get basic rest routes for that class
 This project rocks and uses MIT-LICENSE.
 
-## Initilization
+## Versions
 
-1. Create a file called rest_area.rb in your initilizers file
+This library supports both Rails 3.2.x and Rails 4.1.x.
+
+### Rails 3.2.x
+If you are useing Rails 3.2.x you should use the `rails-3_2` branch and/or version/tags 1.x.x, ie
+
+    gem 'rest_area', '~>1.0'
+
+### Rails 4.1.x
+If you are using Rails 4.1.x you should use the master branch and/or versions/tags 2.x.x, ie
+
+    gem 'rest_area', '~>2.0'
+
+## Initilization / Setup
+
+1. Create a file called `rest_area.rb` in your initilizers file
 2. Add something the following in that file.
 
         RestArea.class_whitelist = [YourModel, ThatYouWant, ToBeInYour, RestApi]
 
-3. Add something like the following to your routes file.
+3. Add something like the following to your `config/routes.rb` file.
 
         mount RestArea::Engine => "/your_base_route"
 
