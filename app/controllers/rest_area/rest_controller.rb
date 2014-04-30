@@ -1,15 +1,19 @@
 module RestArea
   class RestController < ApplicationController
     skip_before_filter :verify_authenticity_token
-    before_filter :get_class
+    before_filter :get_class, :set_class_serializer
 
     # GET
     def index
-      render json:{ @roots => @klass.all }.to_json(root:false)
+      if @serializer
+        render json: @klass.all, each_serializer: @serializer, root:@roots
+      else
+        render json:{ @roots => @klass.all }.to_json(root:false)
+      end
     end
 
     def show
-      render json: @klass.find(params[:id]).to_json(:root => @root), :status => :ok
+      render json: @klass.find(params[:id]), root: @root
     end
     alias_method :edit, :show
 
@@ -17,7 +21,7 @@ module RestArea
     def create
       object = @klass.new(klass_params)
       if object.save
-        render json: object.to_json(:root => @root), :status => :created
+        render json: object, root:@root
       else
         render_errors(object)
       end
@@ -26,8 +30,8 @@ module RestArea
     # PUT
     def update
       object = @klass.find(params[:id])
-      if object.update_attributes(params[@root.to_sym])
-        render json: object.to_json(:root => @root), :status => :ok
+      if object.update_attributes(klass_params)
+        render json: object, root:@root
       else
         render_errors(object)
       end
@@ -37,7 +41,7 @@ module RestArea
     def delete
       object = @klass.find(params[:id])
       if object.destroy
-        render json: object.to_json(:root => @root), :status => :ok
+        render json: object, root:@root
       else
         render_errors(object)
       end
@@ -55,6 +59,16 @@ module RestArea
 
     def klass_params
       params.require(@root.to_sym).permit(@klass.column_names.map(&:to_sym))
+    end
+
+    def set_class_serializer
+      @serializer = ( '::' + @klass.to_s + "Serializer" ).constantize
+    rescue NameError => e
+      if e.message =~ /uninitialized constant/
+        @serializer = false
+      else
+        throw e
+      end
     end
 
     def get_class

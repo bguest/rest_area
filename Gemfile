@@ -8,6 +8,7 @@ gemspec
 group :test do
   gem 'activerecord'
   gem 'actionpack' # action_controller, action_view
+  gem 'active_model_serializers'
   gem 'pry'
 end
 
