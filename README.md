@@ -30,3 +30,10 @@ If you are using Rails 4.1.x you should use the master branch and/or versions/ta
 
         mount RestArea::Engine => "/your_base_route"
 
+# Serializers
+
+But what if I want to customize the JSON that comes back? Simple this
+gem supports [active_model_serializer][1]. Go there, ignore the stuff
+about controllers.
+
+[1]:https://github.com/rails-api/active_model_serializers
