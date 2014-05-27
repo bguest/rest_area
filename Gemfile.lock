@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rest_area (2.0.0)
+    rest_area (2.0.1)
       rails (~> 4.1)
 
 GEM

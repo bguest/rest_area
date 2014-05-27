@@ -6,11 +6,11 @@ describe RestArea::RestController do
   describe "#index GET /rest/:klass" do
     it 'get all the things' do
       if RSpec.configuration.updating_rails_version
-        bob = Thing.create(name:'bob')
-        fred = Thing.create(name:'fred')
+        bob = Thing.create(name:'bob', array:[1,2])
+        fred = Thing.create(name:'fred', array:[3,4])
       else
-        bob = Thing.new(name:'bob')
-        fred = Thing.new(name:'fred')
+        bob = Thing.new(name:'bob', array:[1,2])
+        fred = Thing.new(name:'fred', array:[3,4])
         array = [bob,fred]
         Thing.stubs(:all).returns(array)
       end
@@ -20,7 +20,8 @@ describe RestArea::RestController do
       assigns[:root].should == "thing"
       assigns[:roots].should == "things"
 
-      expected = {'things' => [{'id' => bob.id, 'name' => 'bob'}, {'id' => fred.id, 'name' => 'fred' }]}
+      expected = {'things' => [{'id' => bob.id, 'name' => 'bob', 'array' => [1,2]},
+                               {'id' => fred.id, 'name' => 'fred', 'array' => [3,4]}]}
 
       response = JSON.parse @response.body
       response.should == expected
@@ -51,9 +52,9 @@ describe RestArea::RestController do
     it 'should get the specified object' do
 
       if RSpec.configuration.updating_rails_version
-        thing = Thing.create(name:'dan')
+        thing = Thing.create(name:'dan', array:[1,3])
       else
-        thing = Thing.new(name:'dan')
+        thing = Thing.new(name:'dan', array:[1,3])
         Thing.stubs(:find).with('42').returns(thing)
         thing.stubs(:save).returns(true)
         thing.stubs(:id).returns(42)
@@ -61,7 +62,7 @@ describe RestArea::RestController do
 
       get :show, id:thing.id, :klass => 'things', :format => :json
 
-      expected = {'thing' => {'name' => 'dan', 'id'=>thing.id}}
+      expected = {'thing' => {'name' => 'dan', 'id'=>thing.id, 'array'=>[1,3]}}
       response = JSON.parse @response.body
       response.should == expected
     end
@@ -86,7 +87,7 @@ describe RestArea::RestController do
 
   describe "#create POST /rest/:klass" do
     it 'be able to create object' do
-      attrs = {'name' => 'chris'}
+      attrs = {'name' => 'chris', 'array'=>[1,5]}
       thing = Thing.new(attrs)
 
       unless RSpec.configuration.updating_rails_version
@@ -99,6 +100,7 @@ describe RestArea::RestController do
 
       response = JSON.parse @response.body
       response['thing']['name'].should == 'chris'
+      response['thing']['array'].should == [1,5]
     end
 
     it "return error is can't create object" do
@@ -136,10 +138,10 @@ describe RestArea::RestController do
 
   describe "#update PUT /rest/:klass/:id" do
     it 'be able to update object' do
-      attrs = {'name' => 'chris'}
+      attrs = {'name' => 'chris', array:[2,3]}
 
       if RSpec.configuration.updating_rails_version
-        thing = Thing.create(name:'bob')
+        thing = Thing.create(name:'bob', array:[1,2])
       else
         thing = Thing.new(attrs)
         thing.stubs(:id).returns(99)
@@ -151,7 +153,7 @@ describe RestArea::RestController do
       response.should be_success
 
       response = JSON.parse @response.body
-      expected = {'thing'=>{'id'=>thing.id, 'name'=>'chris'}}
+      expected = {'thing'=>{'id'=>thing.id, 'name'=>'chris', 'array'=>[2,3]}}
       expect(response).to eq(expected)
     end
 
