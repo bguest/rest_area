@@ -73,7 +73,7 @@ module RestArea
         raise ActionController::RoutingError.new("Resource Does Not Exist")
       end
 
-      @roots = ActionController::Base.helpers.sanitize(params[:klass])
+      @roots = ActionController::Base.helpers.sanitize(params[:klass]).pluralize
       @root = @roots.singularize
     end
 
