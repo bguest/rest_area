@@ -1,7 +1,8 @@
 module RestArea
   class RestController < ApplicationController
     skip_before_filter :verify_authenticity_token
-    before_filter :get_class, :set_class_serializer
+    include GetsKlass
+    before_filter :set_class_serializer
 
     # GET
     def index
@@ -64,21 +65,9 @@ module RestArea
     def set_class_serializer
       @serializer = ( '::' + @klass.to_s + "Serializer" ).constantize
     rescue NameError => e
-      if e.message =~ /uninitialized constant/
-        @serializer = false
-      else
+      unless e.message =~ /uninitialized constant/
         throw e
       end
-    end
-
-    def get_class
-      @klass = params[:klass].singularize.camelize.constantize
-      unless RestArea.class_whitelist.include? @klass
-        raise ActionController::RoutingError.new("Resource Does Not Exist")
-      end
-
-      @roots = ActionController::Base.helpers.sanitize(params[:klass]).pluralize
-      @root = @roots.singularize
     end
 
   end

@@ -5,3 +5,4 @@ spec/internal/db/*.sqlite
 spec/internal/log/*.log
 spec/internal/tmp/
 spec/internal/.sass-cache
+coverage/*

@@ -1,3 +1,3 @@
 class CerealSerializer < ActiveModel::Serializer
-  attributes :id, :calories, :name
+  attributes :calories, :name
 end

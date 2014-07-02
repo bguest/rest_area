@@ -3,25 +3,22 @@ require 'spec_helper'
 describe RestArea::RestController do
   routes { RestArea::Engine.routes }
 
+  it_behaves_like 'GetsKlass'
+
   describe "#index GET /rest/:klass" do
     it 'get all the things' do
-      if RSpec.configuration.updating_rails_version
-        bob = Thing.create(name:'bob', array:[1,2])
-        fred = Thing.create(name:'fred', array:[3,4])
-      else
-        bob = Thing.new(name:'bob', array:[1,2])
-        fred = Thing.new(name:'fred', array:[3,4])
-        array = [bob,fred]
-        Thing.stubs(:all).returns(array)
-      end
+      bob = Thing.new(name:'bob', array:[1,2])
+      fred = Thing.new(name:'fred', array:[3,4])
+      array = [bob,fred]
+      Thing.stubs(:all).returns(array)
 
       get :index, :klass => 'things', :format => :json
 
       assigns[:root].should == "thing"
       assigns[:roots].should == "things"
 
-      expected = {'things' => [{'id' => bob.id, 'name' => 'bob', 'array' => [1,2]},
-                               {'id' => fred.id, 'name' => 'fred', 'array' => [3,4]}]}
+      expected = {'things' => [{'id' => bob.id, 'name' => 'bob', 'array' => [1,2], 'cereal_id' => nil},
+                               {'id' => fred.id, 'name' => 'fred', 'array' => [3,4], 'cereal_id' => nil}]}
 
       response = JSON.parse @response.body
       response.should == expected
@@ -41,8 +38,8 @@ describe RestArea::RestController do
 
       get :index, :klass => 'cereals', :format => :json
 
-      expected = {"cereals" => [{"id" => special_k.id, "name" => 'Special K', "calories" => 300},
-                                {"id" => corn_flakes.id, "name" => 'Corn Flakes', "calories" => 450}]}
+      expected = {"cereals" => [{"name" => 'Special K', "calories" => 300},
+                                {"name" => 'Corn Flakes', "calories" => 450}]}
       response = JSON.parse @response.body
       response.should == expected
     end
@@ -50,19 +47,14 @@ describe RestArea::RestController do
 
   describe "#show GET /rest/:klass/:id" do
     it 'should get the specified object' do
-
-      if RSpec.configuration.updating_rails_version
-        thing = Thing.create(name:'dan', array:[1,3])
-      else
-        thing = Thing.new(name:'dan', array:[1,3])
-        Thing.stubs(:find).with('42').returns(thing)
-        thing.stubs(:save).returns(true)
-        thing.stubs(:id).returns(42)
-      end
+      thing = Thing.new(name:'dan', array:[1,3])
+      Thing.stubs(:find).with('42').returns(thing)
+      thing.stubs(:save).returns(true)
+      thing.stubs(:id).returns(42)
 
       get :show, id:thing.id, :klass => 'things', :format => :json
 
-      expected = {'thing' => {'name' => 'dan', 'id'=>thing.id, 'array'=>[1,3]}}
+      expected = {'thing' => {'name' => 'dan', 'id'=>thing.id, 'array'=>[1,3], 'cereal_id' => nil}}
       response = JSON.parse @response.body
       response.should == expected
     end
@@ -76,7 +68,7 @@ describe RestArea::RestController do
         crunch.stubs(:id).returns(42)
       end
 
-      expected = {'cereal' => {'id'=>crunch.id, 'name'=>'Captin Crunch', 'calories' => 765}}
+      expected = {'cereal' => {'name'=>'Captin Crunch', 'calories' => 765}}
 
       get :show, id:crunch.id, :klass => 'cereals', :format => :json
 
@@ -131,7 +123,7 @@ describe RestArea::RestController do
       post :create, cereal:attrs, :klass => 'cereal', :format => :json
 
       response = JSON.parse @response.body
-      expected = {'cereal' => {'id'=>1, 'name' => 'Granola', 'calories'=>123}}
+      expected = {'cereal' => {'name' => 'Granola', 'calories'=>123}}
       response.should == expected
     end
   end
@@ -153,7 +145,7 @@ describe RestArea::RestController do
       response.should be_success
 
       response = JSON.parse @response.body
-      expected = {'thing'=>{'id'=>thing.id, 'name'=>'chris', 'array'=>[2,3]}}
+      expected = {'thing'=>{'id'=>thing.id, 'name'=>'chris', 'array'=>[2,3], 'cereal_id' => nil}}
       expect(response).to eq(expected)
     end
 
@@ -189,7 +181,7 @@ describe RestArea::RestController do
       put :update, cereal:attrs, id:trix.id, :klass => 'cereal', :format => :json
 
       response = JSON.parse @response.body
-      expected = {'cereal' => {'id'=>trix.id, 'name' => 'Trixxx', 'calories'=>321}}
+      expected = {'cereal' => {'name' => 'Trixxx', 'calories'=>321}}
       response.should == expected
     end
   end
@@ -237,7 +229,7 @@ describe RestArea::RestController do
       response.should be_success
 
       response = JSON.parse @response.body
-      expected = {'cereal' => {'id' => bran.id, 'name' => 'All-Bran', 'calories'=>10}}
+      expected = {'cereal' => {'name' => 'All-Bran', 'calories'=>10}}
       response.should == expected
     end
   end

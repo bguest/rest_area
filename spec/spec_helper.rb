@@ -1,3 +1,5 @@
+require 'simplecov'
+SimpleCov.start 'rails'
 ENV["RAILS_ENV"] ||= 'test'
 
 require 'rubygems'
@@ -6,6 +8,7 @@ require 'bundler/setup'
 require 'combustion'
 Combustion.initialize! :active_record, :action_controller
 require 'rspec/rails'
+Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
 
 RSpec.configure do |config|
   config.add_setting :updating_rails_version
