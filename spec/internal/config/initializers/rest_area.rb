@@ -1,1 +1,1 @@
-RestArea.class_whitelist = [Thing, Cereal]
+RestArea.class_whitelist = [Supermarket, Thing, Cereal]

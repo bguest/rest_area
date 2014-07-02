@@ -10,6 +10,7 @@ group :test do
   gem 'actionpack' # action_controller, action_view
   gem 'active_model_serializers'
   gem 'pry'
+  gem 'simplecov', :require => false
 end
 
 # jquery-rails is used by the dummy application
