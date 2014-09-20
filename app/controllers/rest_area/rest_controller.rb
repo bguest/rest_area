@@ -1,5 +1,5 @@
 module RestArea
-  class RestController < ApplicationController
+  class RestController < ::RestArea::ApplicationController
     skip_before_filter :verify_authenticity_token
     include GetsKlass
     before_filter :set_class_serializer

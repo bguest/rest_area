@@ -1,5 +1,5 @@
 module RestArea
-  class ApplicationController < ::ApplicationController 
+  class ApplicationController < ::ApplicationController
 
     private
 

@@ -1,5 +1,5 @@
 module RestArea
-  class MessageController < ApplicationController
+  class MessageController < ::RestArea::ApplicationController
     include GetsKlass
     before_filter :get_message, :set_message_class, :set_message_serializer
 
