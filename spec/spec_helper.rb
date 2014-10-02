@@ -11,6 +11,7 @@ require 'rspec/rails'
 Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
 
 RSpec.configure do |config|
+  config.infer_spec_type_from_file_location!
   config.add_setting :updating_rails_version
   config.updating_rails_version = false
   config.expect_with :rspec do |c|

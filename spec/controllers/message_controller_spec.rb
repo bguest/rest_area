@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RestArea::MessageController do
+describe RestArea::MessageController, :type => :controller do
   routes { RestArea::Engine.routes }
 
   it_behaves_like 'GetsKlass'

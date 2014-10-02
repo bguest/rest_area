@@ -3,6 +3,7 @@ ActiveRecord::Schema.define do
   end
   create_table(:cereals, :force => true) do |t|
     t.string :name
+    t.boolean :healthy
     t.float :calories
     t.integer :supermarket_id
     t.timestamps
