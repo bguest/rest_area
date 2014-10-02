@@ -1,8 +1,11 @@
+require 'saneitized'
+
 module RestArea
   class RestController < ::RestArea::ApplicationController
     skip_before_filter :verify_authenticity_token
     include GetsKlass
     before_filter :set_class_serializer
+    before_filter :add_query_params, :only => [:index]
 
     # GET
     def index
@@ -54,12 +57,15 @@ module RestArea
       render json: {errors: object.errors}, :status => :unprocessable_entity
     end
 
-    def query_params
-      params.slice('limit','order').symbolize_keys
-    end
-
     def klass_params
       params.require(@root.to_sym).permit!
+    end
+
+    def add_query_params
+      where_params = params.slice(*@klass.column_names)
+      if where_params.any?
+        @klass = @klass.where(Saneitized.convert(where_params).to_h)
+      end
     end
 
     def set_class_serializer

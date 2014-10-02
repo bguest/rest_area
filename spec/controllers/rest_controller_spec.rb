@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RestArea::RestController do
+describe RestArea::RestController, :type => :controller do
   routes { RestArea::Engine.routes }
 
   it_behaves_like 'GetsKlass'
@@ -42,6 +42,34 @@ describe RestArea::RestController do
                                 {"name" => 'Corn Flakes', "calories" => 450}]}
       response = JSON.parse @response.body
       response.should == expected
+    end
+  end
+
+  describe '#index GET /rest/:klass?attr1=blah&attr2=bar' do
+    it 'should get only the objects with the selected attributes' do
+      bob1 = Thing.new(name:'bob', array:[1,2]); bob1.id = 1
+      bob2 = Thing.new(name:'bob', array:[1]); bob2.id = 2
+
+      Thing.expects(:where).with('name' => 'bob').returns(stub(:all => [bob1, bob2]))
+
+      get :index, :klass => 'things', :name => 'bob', :format => :json
+
+      expected = {'things' => [{'id' => 1, 'name' => 'bob', 'array' => [1,2], 'cereal_id' => nil},
+                               {'id' => 2, 'name' => 'bob', 'array' => [1], 'cereal_id' => nil}]}
+      response = JSON.parse @response.body
+      response.should == expected
+    end
+
+    it 'should handle true param correctly' do
+      bob = Cereal.new(name:'bob', healthy: true)
+      Cereal.expects(:where).with('healthy' => true).returns(stub(:all => [bob]))
+      get :index, :klass => 'cereals', :healthy => 'true', :format => :json
+    end
+
+    it 'should handle false param correctly' do
+      bob = Cereal.new(name:'bob', healthy: false)
+      Cereal.expects(:where).with('healthy' => false).returns(stub(:all => [bob]))
+      get :index, :klass => 'cereals', :healthy => 'false', :format => :json
     end
   end
 
