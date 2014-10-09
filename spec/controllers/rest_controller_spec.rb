@@ -71,6 +71,12 @@ describe RestArea::RestController, :type => :controller do
       Cereal.expects(:where).with('healthy' => false).returns(stub(:all => [bob]))
       get :index, :klass => 'cereals', :healthy => 'false', :format => :json
     end
+
+    it 'should handle nil param correctly' do
+      bob = Thing.new(name:nil, array:[1,2])
+      Thing.expects(:where).with('name' => nil).returns(stub(:all => [bob]))
+      get :index, :klass => 'thing', name: 'nil'
+    end
   end
 
   describe "#show GET /rest/:klass/:id" do

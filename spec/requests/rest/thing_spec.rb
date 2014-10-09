@@ -34,6 +34,21 @@ describe 'GET /rest/things?name=bob' do
   end
 end
 
+describe 'GET /rest/things?array=nil' do
+  it 'should get all the bobs' do
+    bob1 = Thing.create(name:nil, array:[1])
+    Thing.create(name:'fred', array:[3,4])
+
+    get "/rest/things?name=null"
+    expect(response).to be_success
+
+    expected = {'things' => [{'id' => bob1.id, 'name' => nil, 'array' => [1], 'cereal_id' => nil} ]}
+
+    result = JSON.parse response.body
+    expect(expected).to eq(result)
+  end
+end
+
 describe 'GET /rest/things/:id' do
   it 'should get a thing' do
     thing = Thing.create(name:'dan', array:[1,3])
