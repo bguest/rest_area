@@ -7,7 +7,11 @@ describe RestArea::MessageController, :type => :controller do
 
   describe '#get /rest/:klass/:id/:message' do
     it 'should send random message to object' do
- 
+      john = Thing.new(name:'john')
+      john.id = 42
+      Thing.stubs(:find).with('42').returns john 
+      get :get, klass:'thing', id:'42', message:'say_hello', :format => :json
+      expect(response.body).to eq "\"hello world\""
     end
 
     context 'when message is in class whitelist' do

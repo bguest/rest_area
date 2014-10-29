@@ -8,9 +8,10 @@ gemspec
 group :test do
   gem 'activerecord'
   gem 'actionpack' # action_controller, action_view
-  gem 'active_model_serializers'
-  gem 'pry'
-  gem 'simplecov', :require => false
+  gem 'active_model_serializers', '~>0.9.0'
+  gem 'pry', '~>0.10.1'
+  gem 'pry-nav', '~>0.2.4'
+  gem 'hirb', '~>0.7.2'
 end
 
 # jquery-rails is used by the dummy application

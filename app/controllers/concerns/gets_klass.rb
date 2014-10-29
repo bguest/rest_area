@@ -7,7 +7,8 @@ module GetsKlass
 
   def get_klass
     rescue_uninitialized_constant do
-      @klass = params[:klass].classify.constantize
+      klass = params[:klass].classify.constantize
+      @klass = RestArea.resources[klass.name.underscore.to_sym]
     end
     test_class(@klass)
 
@@ -16,7 +17,7 @@ module GetsKlass
   end
 
   def test_class(klass)
-    if klass.nil? || !RestArea.class_whitelist.include?(klass)
+    if klass.nil? || !RestArea.resources.include?(klass.name.underscore.to_sym)
       raise ActionController::RoutingError.new("Resource Does Not Exist")
     end
   end

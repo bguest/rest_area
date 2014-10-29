@@ -60,3 +60,13 @@ describe 'GET /rest/things/:id' do
     response.should == expected
   end
 end
+
+describe 'GET /rest/things/:id/:message' do
+  it 'should send message to thing' do
+    thing = Thing.create(name:'dan', array:[1,3])
+
+    get "/rest/things/#{thing.id}/say_hello"
+
+    expect(@response.body).to eq "\"hello world\""
+  end
+end

@@ -17,4 +17,7 @@ ActiveRecord::Schema.define do
     t.string :array
     t.integer :cereal_id
   end
+  create_table(:vegetables, :force => true) do |t|
+    t.string :name
+  end
 end
