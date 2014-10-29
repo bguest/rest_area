@@ -4,6 +4,7 @@ module RestArea
   class RestController < ApplicationController
     skip_before_filter :verify_authenticity_token
     include GetsKlass
+    before_filter :test_action
     before_filter :set_class_serializer
     before_filter :add_query_params, :only => [:index]
 
@@ -55,6 +56,16 @@ module RestArea
 
     def render_errors(object)
       render json: {errors: object.errors}, :status => :unprocessable_entity
+    end
+
+    def test_action
+      unless @klass.can_do?(params[:action].to_sym)
+        raise ActionController::RoutingError.new("Resource Does Not Exist")
+      end
+    end
+
+    def klass_params
+      params.require(@root.to_sym).permit!
     end
 
     def add_query_params

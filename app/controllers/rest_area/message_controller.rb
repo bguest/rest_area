@@ -8,8 +8,10 @@ module RestArea
         render json: @klass.find(params[:id]).send(@message).all, each_serializer: @message_serializer, root:@message
       elsif @message_class
         render json: { @message => @klass.find(params[:id]).send(@message).all }.to_json(root:false)
+      elsif @klass.can_send?(@message)
+        render json: @klass.find(params[:id]).send(@message).to_json(root:false)
       else
-        raise NotImplementedError
+        raise ActionController::RoutingError.new("Resource Does Not Exist")
       end
     end
 

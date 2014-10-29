@@ -263,4 +263,26 @@ describe RestArea::RestController, :type => :controller do
       response.should == expected
     end
   end
+
+  context 'with read only resource' do
+    it 'GET /resource/:id should work' do
+      veggie = Vegetable.new(name:'carrot')
+      veggie.id = 42
+      Vegetable.stubs(:where).with(name: 'carrot').returns(stub(:first! => veggie))
+
+      get :show, id:'carrot', klass:'vegetables', format:'json'
+      response.should be_success
+
+      response = JSON.parse @response.body
+      expected = {'vegetable' => {'id' => 42, 'name' => 'carrot'}}
+      response.should == expected
+    end
+
+    it 'should raise error for delete' do
+      expect{
+        delete :delete, id:'carrot', klass:'vegetables', :format=>:json
+      }.to raise_error ActionController::RoutingError
+    end
+  end
+
 end
