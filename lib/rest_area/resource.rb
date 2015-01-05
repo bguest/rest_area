@@ -1,12 +1,11 @@
 module RestArea
-  class Resource < SimpleDelegator
+  class Resource
 
-    attr_reader :actions
+    attr_reader :actions, :klass
 
-    def initialize(klass)
+    def initialize(klss)
       @actions = []
-      @klass = klass.to_s.classify.constantize
-      super @klass
+      @klass = klss.to_s.classify.constantize
     end
 
     def action(*args)
@@ -26,13 +25,26 @@ module RestArea
 
     def message(msg)
       @messages ||= []
-      if @klass.method_defined? msg
+      if klass.method_defined? msg
         @messages << msg
         @messages.uniq!
       else
-        raise NoMethodError.new("#{@klass} will not respond to #{msg}")
+        raise NoMethodError.new("#{klass} will not respond to #{msg}")
       end
     end
+
+    def headers(hdrs = nil)
+      @headers ||= {}
+      if hdrs
+        @headers.merge! hdrs
+      else
+        @headers.inject({}){ |hash, (key, value)|
+          value = value.call if value.kind_of? Proc
+          hash.merge(key => value)
+        }
+      end
+    end
+    alias_method :headers=, :headers
 
     def read_only!
       @actions = [:index, :show]
@@ -53,9 +65,9 @@ module RestArea
     # Wrapped Methods
     def find(*args)
       if key == :id
-        super *args
+        klass.find(*args)
       else
-        @klass.where(key => args[0]).first!
+        klass.where(key => args[0]).first!
       end
     end
 

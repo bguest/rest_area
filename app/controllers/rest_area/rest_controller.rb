@@ -6,6 +6,7 @@ module RestArea
     include GetsKlass
     before_filter :test_action
     before_filter :set_class_serializer
+    before_filter :add_headers
     before_filter :add_query_params, :only => [:index]
 
     # GET
@@ -18,7 +19,7 @@ module RestArea
     end
 
     def show
-      render json: @klass.find(params[:id]), root: @root
+      render json: @resource.find(params[:id]), root: @root
     end
     alias_method :edit, :show
 
@@ -34,7 +35,7 @@ module RestArea
 
     # PUT
     def update
-      object = @klass.find(params[:id])
+      object = @resource.find(params[:id])
       if object.update_attributes(klass_params)
         render json: object, root:@root
       else
@@ -44,7 +45,7 @@ module RestArea
 
     # DELETE
     def delete
-      object = @klass.find(params[:id])
+      object = @resource.find(params[:id])
       if object.destroy
         render json: object, root:@root
       else
@@ -59,13 +60,17 @@ module RestArea
     end
 
     def test_action
-      unless @klass.can_do?(params[:action].to_sym)
+      unless @resource.can_do?(params[:action].to_sym)
         raise ActionController::RoutingError.new("Resource Does Not Exist")
       end
     end
 
     def klass_params
       params.require(@root.to_sym).permit!
+    end
+
+    def add_headers
+      response.headers.merge! @resource.headers
     end
 
     def add_query_params

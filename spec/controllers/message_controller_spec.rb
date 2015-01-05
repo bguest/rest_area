@@ -9,7 +9,7 @@ describe RestArea::MessageController, :type => :controller do
     it 'should send random message to object' do
       john = Thing.new(name:'john')
       john.id = 42
-      Thing.stubs(:find).with('42').returns john 
+      Thing.stubs(:find).with('42').returns john
       get :get, klass:'thing', id:'42', message:'say_hello', :format => :json
       expect(response.body).to eq "\"hello world\""
     end
@@ -31,7 +31,6 @@ describe RestArea::MessageController, :type => :controller do
           {'id'=> 2, 'name'=>'john', 'array' => [], 'cereal_id' => cereal.id}
         ]}
         expect(hash).to eq expected
-
       end
 
       it 'should use serialized json of related objects' do
