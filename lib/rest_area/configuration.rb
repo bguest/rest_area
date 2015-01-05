@@ -1,14 +1,22 @@
 ##
 # Used for configuring rest_area
 #
+# Example:
+#
 # RestArea.config do
 #   resources :cereal, :thing do
 #     action :index, :show, :create, :update, :delete
+#     messages :say_hello, :say_goodbye
+#     headers ({
+#       'Cache-Control' => 'public, max-age=86400'
+#       'Expires' => ->{Date.today + 1}
+#     })
 #   end
 #
 #   resource :supermarket do
 #     read_only!
 #     key :name
+#     message :ring_it_up
 #   end
 # end
 #

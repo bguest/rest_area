@@ -13,6 +13,17 @@ describe 'GET /rest/vegetables' do
 
     result = JSON.parse response.body
     expect(expected).to eq(result)
+
+    expected_headers = {
+      "Content-Type"=>"application/json; charset=utf-8",
+      "Cache-Control"=>"public, max-age=86400",
+      "X-UA-Compatible"=>"IE=Edge,chrome=1",
+      "ETag"=>"\"c84cfef746f11b01e54e18f8bda16184\"",
+      "Content-Length"=>"63"
+    }
+    headers.delete('X-Runtime')
+    headers.delete('X-Request-Id')
+    expect(headers).to eq expected_headers
   end
 end
 

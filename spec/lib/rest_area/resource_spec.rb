@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'timecop'
 
 include RestArea
 
@@ -8,7 +9,7 @@ describe RestArea::Resource do
 
   describe '#class' do
     it 'should set class' do
-      resource.name.should == 'Thing'
+      resource.klass.name.should == 'Thing'
     end
   end
 
@@ -72,6 +73,29 @@ describe RestArea::Resource do
       expect(resource.can_send?('say_hello')).to be true
     end
 
+  end
+
+  describe '#headers' do
+    it 'should be able to set/get headers' do
+      resource.headers( {'Cache-Control' => 'public, max-age=86400'} )
+      expect(resource.headers['Cache-Control']).to eq 'public, max-age=86400'
+    end
+
+    it 'should evaluate lambdas on get' do
+      Timecop.freeze Date.new(2015,01,01) do
+        resource.headers= {'Expires' => ->{(Date.today + 5).httpdate}}
+      end
+      Timecop.freeze Date.new(2016,01,06) do
+        expect(resource.headers['Expires']).to eq "Sun, 10 Jan 2016 00:00:00 GMT"
+      end
+    end
+  end
+
+  describe '#headers=' do
+    it 'should be able to set/get headers' do
+      resource.headers= {'Cache-Control' => 'public, max-age=86400'}
+      expect(resource.headers['Cache-Control']).to eq 'public, max-age=86400'
+    end
   end
 
   describe '#key' do

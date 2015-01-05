@@ -32,6 +32,10 @@ If you are using Rails 4.1.x you should use the master branch and/or versions/ta
           resources :cereal, :thing do
             action :index, :show, :create, :update, :delete
             key :name
+            headers({
+              'Cache-Control' => 'public, max-age=86400'
+              'Expires' => ->{Date.today + 1}
+            })
           end
 
           resource :supermarket do
@@ -64,6 +68,8 @@ With in the `resource` / `resources` block,
 
 + Use `message` or `messages` to whitelist methods for a class. Methods much be defined at
   launch. Methods must respond with an object that responds to `.to_json`
+
++ Use `headers` to specify the response headers hash, this will be merged with existing headers
 
 # Serializers
 

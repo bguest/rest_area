@@ -8,7 +8,8 @@ module GetsKlass
   def get_klass
     rescue_uninitialized_constant do
       klass = params[:klass].classify.constantize
-      @klass = RestArea.resources[klass.name.underscore.to_sym]
+      @resource = RestArea.resources[klass.name.underscore.to_sym]
+      @klass = @resource.klass
     end
     test_class(@klass)
 
