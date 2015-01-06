@@ -82,11 +82,11 @@ describe RestArea::Resource do
     end
 
     it 'should evaluate lambdas on get' do
-      Timecop.freeze Date.new(2015,01,01) do
-        resource.headers= {'Expires' => ->{(Date.today + 5).httpdate}}
+      Timecop.freeze Time.new(2015,01,01,0,0,0,0) do
+        resource.headers= {'Expires' => ->{(Time.now + 5.days).utc.to_s}}
       end
-      Timecop.freeze Date.new(2016,01,06) do
-        expect(resource.headers['Expires']).to eq "Sun, 10 Jan 2016 00:00:00 GMT"
+      Timecop.freeze Time.new(2016,01,06,0,0,0,0) do
+        expect(resource.headers['Expires']).to eq "2016-01-11 00:00:00 UTC"
       end
     end
   end
