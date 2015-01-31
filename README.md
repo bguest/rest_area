@@ -26,7 +26,7 @@ If you are using Rails 4.1.x you should use the master branch and/or versions/ta
 1. Create a file called `rest_area.rb` in your initializers file
 2. Add configuration like the following in that file.
 
-        RestArea.config do
+        RestArea.configure do
           resources :thing_one, :thing_two     # Defaults to all actions
 
           resources :cereal, :thing do

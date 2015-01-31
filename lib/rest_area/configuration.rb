@@ -3,7 +3,7 @@
 #
 # Example:
 #
-# RestArea.config do
+# RestArea.configure do
 #   resources :cereal, :thing do
 #     action :index, :show, :create, :update, :delete
 #     messages :say_hello, :say_goodbye
@@ -36,7 +36,7 @@ module RestArea
     end
 
     def resource(klass, &block)
-      resource = Resource.new(klass)
+      resource = @resources[klass] || Resource.new(klass)
       resource.instance_eval(&block) if block_given?
       @resources[klass] = resource
     end
