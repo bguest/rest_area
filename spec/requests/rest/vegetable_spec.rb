@@ -19,7 +19,7 @@ describe 'GET /rest/vegetables' do
       "X-XSS-Protection"=>"1; mode=block",
       "X-Content-Type-Options"=>"nosniff",
       "Content-Type"=>"application/json; charset=utf-8",
-      "ETag"=>"\"c84cfef746f11b01e54e18f8bda16184\"",
+      "ETag"=>"W/\"c84cfef746f11b01e54e18f8bda16184\"",
       "Cache-Control"=>"public, max-age=86400",
       "Content-Length"=>"63"
     }

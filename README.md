@@ -77,4 +77,6 @@ But what if I want to customize the JSON that comes back? Simple this
 gem supports [active_model_serializer][1]. Go there, ignore the stuff
 about controllers.
 
+*NOTE* You must use AMS 0.8.x, things are not working for AMS 0.9.x+
+
 [1]:https://github.com/rails-api/active_model_serializers
