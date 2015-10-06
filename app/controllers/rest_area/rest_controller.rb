@@ -11,6 +11,10 @@ module RestArea
 
     # GET
     def index
+      if params[:page] || params[:per_page]
+        @klass = paginate(@klass.where(nil))
+      end
+
       if @serializer
         render json: @klass.all, each_serializer: @serializer, root:@roots
       else
