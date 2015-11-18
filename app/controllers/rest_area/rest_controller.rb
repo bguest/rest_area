@@ -74,9 +74,9 @@ module RestArea
     end
 
     def add_query_params
-      where_params = params.slice(*@klass.column_names)
+      where_params = params.slice(*@klass.column_names).permit!
       if where_params.any?
-        @klass = @klass.where(Saneitized.convert(where_params).to_h)
+        @klass = @klass.where(where_params)
       end
     end
 
