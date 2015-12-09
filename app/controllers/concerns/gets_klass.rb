@@ -3,6 +3,7 @@ module GetsKlass
 
   included do
     before_filter :get_klass
+    before_filter :cleanup_params, :only=>[:index, :show]
   end
 
   def get_klass
@@ -16,6 +17,18 @@ module GetsKlass
     @roots = ActionController::Base.helpers.sanitize(params[:klass]).pluralize
     @root = @roots.singularize
   end
+
+  def cleanup_params
+    params.each do |k, v|
+      val = v.index(',') ? v.split(',') : v
+      unless val.is_a? ::Array
+        val = Saneitized.convert(val)
+      end
+      params[k] = val
+
+    end
+  end
+
 
   def test_class(klass)
     if klass.nil? || !RestArea.resources.include?(klass.name.underscore.to_sym)
