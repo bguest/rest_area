@@ -20,6 +20,7 @@ module GetsKlass
 
   def cleanup_params
     params.each do |k, v|
+      next unless v
       val = v.index(',') ? v.split(',') : v
       unless val.is_a? ::Array
         val = Saneitized.convert(val)
