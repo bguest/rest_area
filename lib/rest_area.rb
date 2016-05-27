@@ -1,7 +1,7 @@
 require "rest_area/engine"
 require 'rest_area/resource'
 require 'rest_area/configuration'
-
+require 'api-pagination'
 
 module RestArea
   mattr_reader :class_whitelist

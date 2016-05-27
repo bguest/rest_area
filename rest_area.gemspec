@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 3.2.17"
   s.add_dependency 'saneitized', '~>1.2'
+  s.add_dependency 'will_paginate', '~> 3.0'
+  s.add_dependency 'api-pagination'
   # s.add_dependency "jquery-rails"
 
   s.add_development_dependency 'rspec-rails', '~>3.0'
