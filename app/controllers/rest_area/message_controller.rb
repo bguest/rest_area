@@ -5,9 +5,20 @@ module RestArea
 
     def get
       @msg_resource = @resource.find(params[:id]).send(@message)
-      if params[:page] || params[:per_page]
-        @msg_resource = paginate(@msg_resource.where(nil), params.slice(:page, :per_page))
+
+      @msg_resource = @msg_resource.where(nil) if @msg_resource.respond_to? :where
+      if params[:sort]
+        @msg_resource = order(@msg_resource)
       end
+
+      if params[:page] || params[:per_page]
+        @msg_resource = paginate(@msg_resource, params.slice(:page, :per_page))
+      end
+
+      if params[:q]
+        @msg_resource = search(@msg_resource)
+      end
+
       if @message_serializer
         render json: @msg_resource.all, each_serializer: @message_serializer, root:@message
       elsif @message_class

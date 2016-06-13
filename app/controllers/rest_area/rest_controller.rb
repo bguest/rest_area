@@ -11,14 +11,25 @@ module RestArea
 
     # GET
     def index
-      if params[:page] || params[:per_page]
-        @klass = paginate(@klass.where(nil))
+
+      if params[:sort]
+        @scope = order(scope)
       end
 
+      if params[:page] || params[:per_page]
+        @scope = paginate(scope)
+      end
+
+      if params[:q]
+        @scope = search(scope)
+      end
+
+      records = @scope || @klass.all
+      
       if @serializer
-        render json: @klass.all, each_serializer: @serializer, root:@roots
+        render json: records, each_serializer: @serializer, root:@roots
       else
-        render json:{ @roots => @klass.all }.to_json(root:false)
+        render json:{ @roots => records }.to_json(root:false)
       end
     end
 
@@ -71,6 +82,10 @@ module RestArea
 
     def klass_params
       params.require(@root.to_sym).permit!
+    end
+    
+    def scope
+      @scope ||= @klass.where(nil)
     end
 
     def add_headers

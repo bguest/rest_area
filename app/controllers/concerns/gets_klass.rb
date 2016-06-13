@@ -23,7 +23,7 @@ module GetsKlass
       next unless v
       val = v.index(',') ? v.split(',') : v
       unless val.is_a? ::Array
-        val = Saneitized.convert(val)
+        val = Saneitized.convert(val) rescue val
       end
       params[k] = val
 
