@@ -7,9 +7,9 @@ require "rest_area/version"
 Gem::Specification.new do |s|
   s.name        = "rest_area"
   s.version     = RestArea::VERSION
-  s.authors     = ["Benjamin Guest"]
-  s.email       = ["benguest@gmail.com"]
-  s.homepage    = "https://github.com/bguest/rest_area"
+  s.authors     = ["Visible Measures Enginnering"]
+  s.email       = ["eng@visiblemeasures.com"]
+  s.homepage    = "https://github.com/vmcbos/rest_area"
   s.summary     = "Adds a restfull controller and api to a Rails Application"
   s.description = "RestArea adds a restfull controller and api to any Rails Application, simply add the gem and whitelist of available models"
 
