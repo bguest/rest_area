@@ -4,12 +4,27 @@ module RestArea
     before_filter :get_message, :set_message_class, :set_message_serializer
 
     def get
+      @msg_resource = @resource.find(params[:id]).send(@message)
+
+      @msg_resource = @msg_resource.where(nil) if @msg_resource.respond_to? :where
+      if params[:sort]
+        @msg_resource = order(@msg_resource)
+      end
+
+      if params[:page] || params[:per_page]
+        @msg_resource = paginate(@msg_resource, params.slice(:page, :per_page))
+      end
+
+      if params[:q]
+        @msg_resource = search(@msg_resource)
+      end
+
       if @message_serializer
-        render json: @resource.find(params[:id]).send(@message).all, each_serializer: @message_serializer, root:@message
+        render json: @msg_resource.all, each_serializer: @message_serializer, root:@message
       elsif @message_class
-        render json: { @message => @resource.find(params[:id]).send(@message).all }.to_json(root:false)
+        render json: { @message => @msg_resource.all }.to_json(root:false)
       elsif @resource.can_send?(@message)
-        render json: @resource.find(params[:id]).send(@message).to_json(root:false)
+        render json: @msg_resource.to_json(root:false)
       else
         raise ActionController::RoutingError.new("Resource Does Not Exist")
       end

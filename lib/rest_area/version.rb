@@ -1,3 +1,3 @@
 module RestArea
-  VERSION = "1.4.3"
+  VERSION = "1.4.6"
 end

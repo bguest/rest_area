@@ -45,6 +45,20 @@ describe RestArea::RestController, :type => :controller do
     end
   end
 
+  describe '#index GET /rest/:klass?id=val1,val2' do
+    let(:bob1){thing = Thing.new(name:'bob', array:[1,2]); thing.id=1; thing}
+    let(:bob2){thing = Thing.new(name:'bob', array:[1]); thing.id=2; thing}
+    it "should retrieve an array of values" do
+      Thing.expects(:where).with('id' => [bob1.id.to_s, bob2.id.to_s]).returns(stub(:all => [bob1, bob2]))
+      get :index, klass: "things", id: "1,2", format: :json
+      expected = {'things' => [{'id' => 1, 'name' => 'bob', 'array' => [1,2], 'cereal_id' => nil},
+                               {'id' => 2, 'name' => 'bob', 'array' => [1], 'cereal_id' => nil}]}
+      response = JSON.parse @response.body
+      response.should == expected
+    end
+  end
+
+
   describe '#index GET /rest/:klass?attr1=blah&attr2=bar' do
     it 'should get only the objects with the selected attributes' do
       bob1 = Thing.new(name:'bob', array:[1,2]); bob1.id = 1
@@ -79,10 +93,97 @@ describe RestArea::RestController, :type => :controller do
     end
   end
 
+  describe 'index sorting' do
+    it 'should get the objects in the given ascending order' do
+      t1 = Thing.create(name:'z'); t1.id = 1
+      t2 = Thing.create(name:'f'); t2.id = 2
+      t3 = Thing.create(name:'a'); t3.id = 3
+
+      get :index, :klass => 'things', :sort => 'name', :format => :json
+
+      expected = {'things' => [
+                               {'id' => 3, 'name' => 'a', 'array' => [], 'cereal_id' => nil},
+                               {'id' => 2, 'name' => 'f', 'array' => [], 'cereal_id' => nil},
+                               {'id' => 1, 'name' => 'z', 'array' => [], 'cereal_id' => nil}
+                              ]
+      }
+      response = JSON.parse @response.body
+      response.should == expected
+    end 
+
+    it 'should get the objects in the given descending order' do
+      t1 = Thing.create(name:'z'); t1.id = 1
+      t2 = Thing.create(name:'f'); t2.id = 2
+      t3 = Thing.create(name:'a'); t3.id = 3
+
+      get :index, :klass => 'things', :sort => '-name', :format => :json
+
+      expected = {'things' => [
+                               {'id' => 1, 'name' => 'z', 'array' => [], 'cereal_id' => nil},
+                               {'id' => 2, 'name' => 'f', 'array' => [], 'cereal_id' => nil},
+                               {'id' => 3, 'name' => 'a', 'array' => [], 'cereal_id' => nil}
+                              ]
+      }
+      response = JSON.parse @response.body
+      response.should == expected
+    end 
+  end
+
+  describe 'searching' do
+    it 'should get the objects with the given search data' do
+      t1 = Thing.create(name:'zoom'); t1.id = 1
+      t2 = Thing.create(name:'foom'); t2.id = 2
+      t3 = Thing.create(name:'angle'); t3.id = 3
+
+      get :index, :klass => 'things', :q => {name: 'oom'}, :format => :json
+
+      expected = {'things' => [
+                               {'id' => 1, 'name' => 'zoom', 'array' => [], 'cereal_id' => nil},
+                               {'id' => 2, 'name' => 'foom', 'array' => [], 'cereal_id' => nil}
+                              ]
+      }
+      response = JSON.parse @response.body
+      response.should == expected
+    end 
+  end
+
+  describe 'paging' do
+    it 'should get the objects with paging and per_page params' do
+      t1 = Thing.create(name:'a'); t1.id = 1
+      t2 = Thing.create(name:'b'); t2.id = 2
+      t3 = Thing.create(name:'c'); t3.id = 3
+
+      get :index, :klass => 'things', :page => "2", :per_page => "1", :format => :json
+
+      expected = {'things' => [
+                               {'id' => 2, 'name' => 'b', 'array' => [], 'cereal_id' => nil}
+                              ]
+      }
+      response = JSON.parse @response.body
+      response.should == expected
+    end 
+
+    it 'should get the objects with the given per_page params' do
+      t1 = Thing.create(name:'a'); t1.id = 1
+      t2 = Thing.create(name:'b'); t2.id = 2
+      t3 = Thing.create(name:'c'); t3.id = 3
+
+      get :index, :klass => 'things', :per_page => "1", :format => :json
+
+      expected = {'things' => [
+                               {'id' => 1, 'name' => 'a', 'array' => [], 'cereal_id' => nil}
+                              ]
+      }
+      response = JSON.parse @response.body
+      response.should == expected
+    end 
+ 
+  end
+
   describe "#show GET /rest/:klass/:id" do
     it 'should get the specified object' do
       thing = Thing.new(name:'dan', array:[1,3])
-      Thing.stubs(:find).with('42').returns(thing)
+      Thing.stubs(:find).with(42).returns(thing)
       thing.stubs(:save).returns(true)
       thing.stubs(:id).returns(42)
 
@@ -98,7 +199,7 @@ describe RestArea::RestController, :type => :controller do
         crunch = Cereal.create(name:'Captin Crunch', calories:765)
       else
         crunch = Cereal.new(name:'Captin Crunch', calories:765)
-        Cereal.stubs(:find).with('42').returns(crunch)
+        Cereal.stubs(:find).with(42).returns(crunch)
         crunch.stubs(:id).returns(42)
       end
 

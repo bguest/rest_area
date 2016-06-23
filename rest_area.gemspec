@@ -7,9 +7,9 @@ require "rest_area/version"
 Gem::Specification.new do |s|
   s.name        = "rest_area"
   s.version     = RestArea::VERSION
-  s.authors     = ["Benjamin Guest"]
-  s.email       = ["benguest@gmail.com"]
-  s.homepage    = "https://github.com/bguest/rest_area"
+  s.authors     = ["Visible Measures Enginnering"]
+  s.email       = ["eng@visiblemeasures.com"]
+  s.homepage    = "https://github.com/vmcbos/rest_area"
   s.summary     = "Adds a restfull controller and api to a Rails Application"
   s.description = "RestArea adds a restfull controller and api to any Rails Application, simply add the gem and whitelist of available models"
 
@@ -17,6 +17,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 3.2.17"
   s.add_dependency 'saneitized', '~>1.2'
+  s.add_dependency 'will_paginate', '~> 3.0'
+  s.add_dependency 'api-pagination'
+  s.add_dependency 'ransack', '~> 1.7.0'
   # s.add_dependency "jquery-rails"
 
   s.add_development_dependency 'rspec-rails', '~>3.0'
